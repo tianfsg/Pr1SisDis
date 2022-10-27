@@ -3,8 +3,6 @@
 #include <iostream>
 #include "multmatrix.h"
 
-
-
 void freeMatrix(matrix_t* m){
     delete[] m->data;
     delete[] m;
@@ -13,7 +11,6 @@ void freeMatrix(matrix_t* m){
 int main()
 {
     multMatrix* mmatrix=new multMatrix();
-
 
     matrix_t* m1= mmatrix->createRandMatrix(5,5);
     matrix_t* m2= mmatrix->createIdentity(5,5);
