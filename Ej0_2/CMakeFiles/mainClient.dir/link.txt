@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/mainClient.dir/main.cpp.o CMakeFiles/mainClient.dir/holaMundo_stub.cpp.o CMakeFiles/mainClient.dir/utils.cpp.o  -o mainClient -lpthread 

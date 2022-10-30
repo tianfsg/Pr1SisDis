@@ -1,0 +1,5 @@
+/home/ubuntu/comp/Ej0_2/CMakeFiles/rebuild_cache.dir
+/home/ubuntu/comp/Ej0_2/CMakeFiles/mainServer.dir
+/home/ubuntu/comp/Ej0_2/CMakeFiles/edit_cache.dir
+/home/ubuntu/comp/Ej0_2/CMakeFiles/main.dir
+/home/ubuntu/comp/Ej0_2/CMakeFiles/mainClient.dir
