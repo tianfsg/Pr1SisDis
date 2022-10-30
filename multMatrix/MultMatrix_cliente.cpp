@@ -1,8 +1,7 @@
-#include <iostream>
 #include "MultMatrix_cliente.h"
+#include "utils.h"
 
 using namespace std;
-
 #define PORT 40000
 #define IP_SERVER "52.20.216.232"
 
@@ -45,19 +44,19 @@ matrix_t * multMatrix :: multMatrices(matrix_t* m1, matrix_t *m2){
     int typeOP = OP_MULT;
     sendMSG(serverId, (const void*)&typeOP, sizeof(int));
 
-    matrix_t * matrix;
+    matrix_t * matrix = nullptr;
     matrix->rows = m1->cols;
     matrix->cols = m2->rows;
 
     //Enviamos M1
-    sendMSG(serverId, (const void *)m1->rows, sizeof(int));
-    sendMSG(serverId, (const void *)m1->cols, sizeof(int));
-    sendMSG(serverId, (const void *)m1->data, sizeof(int*));
+    sendMSG(serverId, (const void *)&m1->rows, sizeof(int));
+    sendMSG(serverId, (const void *)&m1->cols, sizeof(int));
+    sendMSG(serverId, (const void *)&m1->data, sizeof(int*));
 
     //Enviamos M2
-    sendMSG(serverId, (const void *)m2->rows, sizeof(int));
-    sendMSG(serverId, (const void *)m2->cols, sizeof(int));
-    sendMSG(serverId, (const void *)m2->data, sizeof(int*));
+    sendMSG(serverId, (const void *)&m2->rows, sizeof(int));
+    sendMSG(serverId, (const void *)&m2->cols, sizeof(int));
+    sendMSG(serverId, (const void *)&m2->data, sizeof(int*));
 
     int recvBufferSize = 0;
     recvMSG(serverId, (void **)matrix->data, &recvBufferSize);
@@ -70,9 +69,9 @@ void multMatrix :: writeMatrix(matrix_t* m, const char *fileName){
     sendMSG(serverId, (const void*)&typeOP, sizeof(int));
 
     //Enviamos matrix
-    sendMSG(serverId, (const void *)m->rows, sizeof(int));
-    sendMSG(serverId, (const void *)m->cols, sizeof(int));
-    sendMSG(serverId, (const void *)m->data, sizeof(int*));
+    sendMSG(serverId, (const void *)&m->rows, sizeof(int));
+    sendMSG(serverId, (const void *)&m->cols, sizeof(int));
+    sendMSG(serverId, (const void *)&m->data, sizeof(int*));
 
     //Enviamos file
     size_t sizeFileName = strlen(fileName);
@@ -85,8 +84,8 @@ matrix_t* multMatrix :: createIdentity(int rows, int cols){
     sendMSG(serverId, (const void*)&typeOP, sizeof(int));
 
     //enviamos las dimensiones
-    sendMSG(serverId, (const void *)rows, sizeof(int));
-    sendMSG(serverId, (const void *)cols, sizeof(int));
+    sendMSG(serverId, (const void *)&rows, sizeof(int));
+    sendMSG(serverId, (const void *)&cols, sizeof(int));
 
     //construimos la matrix que vamos a recibir
     matrix_t * matrix;
@@ -98,13 +97,13 @@ matrix_t* multMatrix :: createIdentity(int rows, int cols){
 
     return matrix;
 }
-matrix_t multMatrix :: *createRandMatrix(int rows, int cols){
+matrix_t* multMatrix :: createRandMatrix(int rows, int cols){
     int typeOP = OP_RAND;
     sendMSG(serverId, (const void*)&typeOP, sizeof(int));
 
     //enviamos las dimensiones
-    sendMSG(serverId, (const void *)rows, sizeof(int));
-    sendMSG(serverId, (const void *)cols, sizeof(int));
+    sendMSG(serverId, (const void *)&rows, sizeof(int));
+    sendMSG(serverId, (const void *)&cols, sizeof(int));
 
     //construimos la matrix que vamos a recibir
     matrix_t * matrix;

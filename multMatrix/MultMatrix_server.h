@@ -1,8 +1,5 @@
 #pragma once
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream>
 #include "multmatrix.h"
 
 #define OP_END 0
@@ -11,7 +8,6 @@
 #define OP_SCHREIBE 3
 #define OP_IDENTITY 4
 #define OP_RAND 5
-
 
 class MultMatrix_imp
 {
