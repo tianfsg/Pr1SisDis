@@ -18,7 +18,7 @@ private:
     
     //Metodos
     void leerMatrix();
-    void multMatrix();
+    void multiMatrix();
     void schreibeMatrix();
     void identityMatrix();
     void randomMatrix();

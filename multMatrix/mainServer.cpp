@@ -1,4 +1,4 @@
-#include "MultMatrix_imp.h"
+#include "MultMatrix_server.h"
 #include "utils.h"
 
 #define PORT 40000
@@ -10,7 +10,7 @@ int main(int argc, char **argv)
         if (checkNewConnections())
         {
             int clientId = getNewConnection();
-            MultMatrix_Imp * mmi = new MultMatrix_Imp(clientId);
+            MultMatrix_imp * mmi = new MultMatrix_imp(clientId);
             mmi->recvOp();
             delete mmi;
         }

@@ -24,92 +24,113 @@ void MultMatrix_imp :: leerMatrix(){
     matrix_t * result = mmi->readMatrix(fileName);
 
     //Enviamos la matrix
-    sendMSG(clientId, (const void *)result->rows, sizeof(int));
-    sendMSG(clientId, (const void *)result->cols, sizeof(int));
-    sendMSG(clientId, (const void *)result->data, sizeof(int*));
+    sendMSG(clientId, (const void *)&result->rows, sizeof(int));
+    sendMSG(clientId, (const void *)&result->cols, sizeof(int));
+    sendMSG(clientId, (const void *)&result->data, sizeof(int*));
 
     delete[] fileName;
 }
 
-void MultMatrix_imp :: multMatrix(){
+void MultMatrix_imp :: multiMatrix(){
 
-    matrix_t * m1, * m2, * m3;
+    int * buff = nullprt;
     int recvBuffSize = 0;
 
+    matrix_t * m1 = new matrix_t();
+    matrix_t * m2 = new matrix_t();
+
     //recibimos M1
-    recvMSG(clientId, (void **)m1->rows, &recvBuffSize);
-    recvMSG(clientId, (void **)m1->cols, &recvBuffSize);
-    recvMSG(clientId, (void **)m1->data, &recvBuffSize);
+    recvMSG(clientId, (void **)&buff, &recvBuffSize);
+    m1->rows = buff[0];
+    recvMSG(clientId, (void **)&buff, &recvBuffSize);
+    m1->cols = buff[0];
+    recvMSG(clientId, (void **)&buff, &recvBuffSize);
+    m1->data = buff[0];
 
     //recibimos M2
-    recvMSG(clientId, (void **)m2->rows, &recvBuffSize);
-    recvMSG(clientId, (void **)m2->cols, &recvBuffSize);
-    recvMSG(clientId, (void **)m2->data, &recvBuffSize);
+    recvMSG(clientId, (void **)&buff, &recvBuffSize);
+    m2->rows = buff[0];
+    recvMSG(clientId, (void **)&buff, &recvBuffSize);
+    m2->cols = buff[0];
+    recvMSG(clientId, (void **)&buff, &recvBuffSize);
+    m2->data = buff[0];
 
-    m3 = mmi->multMatrices(m1,m2);
+
+    matrix_t * m3 = mmi->multMatrices(m1,m2);
 
     delete[] m1;
     delete[] m2;
     
     //Enviamos M3
-    sendMSG(clientId, (const void *)m3->data, sizeof(int*));
+    sendMSG(clientId, (const void *)&m3->data, sizeof(int*));
 
     delete[] m3;
 }
 void MultMatrix_imp :: schreibeMatrix(){
 
     //Creamos la matrix y nombre del fichero
-    matrix_t * m;
+    matrix_t * m = new matrix_t();
+
     const char *fileName = nullptr;
-    
+
+    int * buff = nullptr;
     int recvBuffSize = 0;
 
     //recibimos la informacion
-    recvMSG(clientId, (void **)m->rows, &recvBuffSize);
-    recvMSG(clientId, (void **)m->cols, &recvBuffSize);
-    recvMSG(clientId, (void **)m->data, &recvBuffSize);
+    recvMSG(clientId, (void **)&buff, &recvBuffSize);
+    m->rows = buff[0];
+    recvMSG(clientId, (void **)&buff, &recvBuffSize);
+    m->cols = buff[0];
+    recvMSG(clientId, (void **)&buff, &recvBuffSize);
+    m->data = buff[0];
     recvMSG(clientId, (void **)&fileName, &recvBuffSize);
 
-    mmi->writeMatrix(m, fileName);
+    mmi->writeMatrix(m, fileName[0]);
 
     cout << "Matrix satisfactoriamente guardada." << endl;
     
     delete [] m;
     delete [] fileName;
+    delete [] buff;
 }
 
 void MultMatrix_imp :: identityMatrix(){
 
-    int rows, cols;
-    int * data;
+    matrix_t * m = nullptr;
+    int * rows = nullptr, * cols = nullptr;
     int recvBuffSize = 0;
 
     //Recibimos las dimensiones
     recvMSG(clientId, (void **)&rows, &recvBuffSize);
     recvMSG(clientId, (void **)&cols, &recvBuffSize);
 
-    data = mmi->createIdentity(rows,cols);
+    m = mmi->createIdentity(rows[0],cols[0]);
 
-    sendMSG(clientId, (const void *)data, sizeof(int*));
-
-    delete[] data;
+    sendMSG(clientId, (const void *)&m->data, sizeof(int*));
+    
+    delete []rows;
+    delete [] cols;
+    delete [] m;
 }
 
 void MultMatrix_imp :: randomMatrix(){
 
-    int rows, cols;
-    int * data;
+    matrix_t * m = nullptr;
+    int * rows = nullptr, * cols = nullptr;
     int recvBuffSize = 0;
 
     //Recibimos las dimensiones
     recvMSG(clientId, (void **)&rows, &recvBuffSize);
     recvMSG(clientId, (void **)&cols, &recvBuffSize);
 
-    data = mmi->createRandMatrix(rows,cols);
+    m = mmi->createRandMatrix(rows[0],cols[0]);
+    print("ROWS: %d\n", rows[0]);
 
-    sendMSG(clientId, (const void *)data, sizeof(int*));
+    sendMSG(clientId, (const void *)&m->data, sizeof(int*));
 
-    delete[] data;
+    delete []rows;
+    delete [] cols;
+    delete [] m;
 }
 
 
@@ -128,7 +149,7 @@ void MultMatrix_imp :: recvOp(){
                 leerMatrix();
                 break;
             case OP_MULT:
-                multMatrix();
+                multiMatrix();
                 break;
             case OP_SCHREIBE:
                 schreibeMatrix();
