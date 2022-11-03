@@ -1,0 +1,5 @@
+/Users/tianfsg/Documents/GitHub/Pr1SisDis/multMatrix/CMakeFiles/multMatrix.dir
+/Users/tianfsg/Documents/GitHub/Pr1SisDis/multMatrix/CMakeFiles/mainClient.dir
+/Users/tianfsg/Documents/GitHub/Pr1SisDis/multMatrix/CMakeFiles/mainServer.dir
+/Users/tianfsg/Documents/GitHub/Pr1SisDis/multMatrix/CMakeFiles/edit_cache.dir
+/Users/tianfsg/Documents/GitHub/Pr1SisDis/multMatrix/CMakeFiles/rebuild_cache.dir
