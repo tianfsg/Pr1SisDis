@@ -1,9 +1,11 @@
 #include <iostream>
-#include "filemanager.h"
+#include "filemanager_stub.h"
+
+using namespace std;
 
 int main(int argc,char** argv)
 {
-    FileManager *fm=new FileManager("./dirprueba/");
+    FileManager *fm=new FileManager("dirprueba/");
     vector<string*>* vfiles=fm->listFiles();
     cout<<"Lista de ficheros en el directorio de prueba:\n";
     for(unsigned int i=0;i<vfiles->size();++i)
@@ -19,7 +21,7 @@ int main(int argc,char** argv)
     fm->writeFile(&(*(vfiles->at(0)))[0],data,fileLen);
     cout<<"Liberando lista de ficheros:\n";
     fm->freeListedFiles(vfiles);
-    cout<<"Liberando datos de fichero leído:\n";
+    cout<<"Liberando datos de fichero leído:\n"; 
 
     delete[] data;
     return 0;

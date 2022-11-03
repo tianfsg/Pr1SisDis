@@ -1,0 +1,5 @@
+/home/ubuntu/EjClase/Practica1/Pr1SisDis/fileManager/CMakeFiles/edit_cache.dir
+/home/ubuntu/EjClase/Practica1/Pr1SisDis/fileManager/CMakeFiles/rebuild_cache.dir
+/home/ubuntu/EjClase/Practica1/Pr1SisDis/fileManager/CMakeFiles/mainServer.dir
+/home/ubuntu/EjClase/Practica1/Pr1SisDis/fileManager/CMakeFiles/fileManager.dir
+/home/ubuntu/EjClase/Practica1/Pr1SisDis/fileManager/CMakeFiles/mainClient.dir

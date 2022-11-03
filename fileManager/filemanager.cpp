@@ -101,5 +101,4 @@ void FileManager::writeFile(char* fileName, char* data, unsigned long dataLength
 //añadir a la lista el nuevo fichero, si no existe ya
     if(files.find(string(fileName))==files.end())
         files[ string(fileName)]=new string(fileName);
-
 }
