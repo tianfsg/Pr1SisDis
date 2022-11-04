@@ -33,7 +33,7 @@ void MultMatrix_imp :: leerMatrix(){
 
 void MultMatrix_imp :: multiMatrix(){
 
-    int * buff = nullprt;
+    int * buff = nullptr;
     int recvBuffSize = 0;
 
     matrix_t * m1 = new matrix_t();
@@ -45,7 +45,7 @@ void MultMatrix_imp :: multiMatrix(){
     recvMSG(clientId, (void **)&buff, &recvBuffSize);
     m1->cols = buff[0];
     recvMSG(clientId, (void **)&buff, &recvBuffSize);
-    m1->data = buff[0];
+    m1->data = &buff[0];
 
     //recibimos M2
     recvMSG(clientId, (void **)&buff, &recvBuffSize);
@@ -53,18 +53,18 @@ void MultMatrix_imp :: multiMatrix(){
     recvMSG(clientId, (void **)&buff, &recvBuffSize);
     m2->cols = buff[0];
     recvMSG(clientId, (void **)&buff, &recvBuffSize);
-    m2->data = buff[0];
+    m2->data = &buff[0];
 
 
     matrix_t * m3 = mmi->multMatrices(m1,m2);
 
-    delete[] m1;
-    delete[] m2;
+    delete m1;
+    delete m2;
     
     //Enviamos M3
     sendMSG(clientId, (const void *)&m3->data, sizeof(int*));
 
-    delete[] m3;
+    delete m3;
 }
 void MultMatrix_imp :: schreibeMatrix(){
 
@@ -82,14 +82,14 @@ void MultMatrix_imp :: schreibeMatrix(){
     recvMSG(clientId, (void **)&buff, &recvBuffSize);
     m->cols = buff[0];
     recvMSG(clientId, (void **)&buff, &recvBuffSize);
-    m->data = buff[0];
+    m->data = &buff[0];
     recvMSG(clientId, (void **)&fileName, &recvBuffSize);
 
-    mmi->writeMatrix(m, fileName[0]);
+    mmi->writeMatrix(m, &fileName[0]);
 
     cout << "Matrix satisfactoriamente guardada." << endl;
     
-    delete [] m;
+    delete m;
     delete [] fileName;
     delete [] buff;
 }
@@ -124,7 +124,6 @@ void MultMatrix_imp :: randomMatrix(){
     recvMSG(clientId, (void **)&cols, &recvBuffSize);
 
     m = mmi->createRandMatrix(rows[0],cols[0]);
-    print("ROWS: %d\n", rows[0]);
 
     sendMSG(clientId, (const void *)&m->data, sizeof(int*));
 

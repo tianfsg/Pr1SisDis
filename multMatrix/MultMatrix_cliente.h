@@ -1,6 +1,8 @@
 #pragma once
 
 #include <iostream>
+#include <cstring>
+
 using namespace std;
 
 #define OP_END 0
