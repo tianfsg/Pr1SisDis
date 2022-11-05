@@ -45,6 +45,8 @@ void FileManager_imp::recieveReadFile(){
 	recvMSG(clientId, (void**)&recvBuffData, (int*)&recvBuffDataSize);
 	
 	fm->readFile(recvBuffFile, recvBuffData, recvBuffDataSize);
+	
+	sendMSG(clientId, (const void*)recvBuffData, recvBuffDataSize);
 }
 
 void FileManager_imp::recieveFreeListedFiles(){

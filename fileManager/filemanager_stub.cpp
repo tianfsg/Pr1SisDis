@@ -54,6 +54,8 @@ void FileManager::readFile(char* fileName, char* &data, unsigned long int & data
 	
 	sendMSG(serverId, (const void*)fileName, sizeof(char)*strlen(fileName));
 	sendMSG(serverId, (const void*)&data, dataLength);
+	
+	recvMSG(serverId, (void**)&data, (int*)&dataLength);
 }
 
 void FileManager::freeListedFiles(vector<string*>* fileList){
@@ -75,5 +77,5 @@ void FileManager::writeFile(char* fileName, char* data, unsigned long int dataLe
 	sendMSG(serverId, (const void*)&typeOp, sizeof(int));
 	
 	sendMSG(serverId, (const void*)fileName, sizeof(char)*strlen(fileName));
-	sendMSG(serverId, (const void*)&data, dataLength);
+	sendMSG(serverId, (const void*)data, dataLength);
 }

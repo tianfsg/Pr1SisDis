@@ -45,6 +45,10 @@ dirent.h
 /home/ubuntu/EjClase/Practica1/Pr1SisDis/fileManager/main_fm.cpp
 iostream
 -
+stdlib.h
+-
+string
+-
 filemanager_stub.h
 /home/ubuntu/EjClase/Practica1/Pr1SisDis/fileManager/filemanager_stub.h
 
