@@ -3,6 +3,7 @@
 
 #define PORT 40000
 
+//Función para iniciar un hilo asignado a un cliente
 void clientThread(int clientId){
 	FileManager_imp* fmi = new FileManager_imp(clientId);
 			
@@ -10,10 +11,13 @@ void clientThread(int clientId){
 	delete fmi;
 }
 
+//Función principal server
 int main(int argc, char** arg){
 	
+	//Inicia el servidor
 	int serverId = initServer(PORT);
 	
+	//Bucle infinito para esperar peticiones de nuevos clientes
 	while(1){
 		
 		if(checkNewConnections()){
