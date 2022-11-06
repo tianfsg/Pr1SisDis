@@ -8,8 +8,8 @@ using namespace std;
 void freeMatrix(matrix_t* m){
     delete[] m->data;
     delete[] m;
-
 }
+
 int main()
 {
     cout << "EMPIEZA EL PROGRAMA : MAIN" << endl;
@@ -33,6 +33,7 @@ int main()
 
     matrix_t* m3=mmatrix->readMatrix("resultado.txt");
 
+
     cout << "LANZAMOS MULT() : MAIN" << endl;
 
     matrix_t* mres2=mmatrix->multMatrices(m1,m3);
@@ -41,14 +42,25 @@ int main()
 
     mmatrix->writeMatrix(mres2,"resultado2.txt");
 
+    matrix_t* m7= mmatrix->createIdentity(5,5);
+    mmatrix->writeMatrix(m7,"resultado3.txt");
+
+
+
     cout << "LIBERAMOS MEMORIA : MAIN" << endl;
 
-
     freeMatrix(m1);
+    cout << "m1 liberada" << endl;
     freeMatrix(m2);
+    cout << "m2 liberada" << endl;
     freeMatrix(mres);
-    freeMatrix(m3);
+    cout << "mres liberada" << endl;
     freeMatrix(mres2);
+    cout << "mres2 liberada" << endl;
+    freeMatrix(m3);
+    cout << "m3 liberada" << endl;
+
+    cout << "BORRAMOS MATIRX : MAIN" << endl;
     delete mmatrix;
 
 }
