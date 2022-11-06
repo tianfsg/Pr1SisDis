@@ -45,6 +45,8 @@ void MultMatrix_imp :: multiMatrix(){
     cout << "OPERACION *MULT* | (SERVER)" << endl;
 
     int * recvRows = nullptr, * recvCols = nullptr, * recvData = nullptr;
+    int * recvRows2 = nullptr, * recvCols2 = nullptr, * recvData2 = nullptr;
+
     int recvBuffSize = 0;
 
     //recibimos M1
@@ -57,28 +59,15 @@ void MultMatrix_imp :: multiMatrix(){
     m1->cols = recvCols[0];
     m1->data = recvData;
 
-    // cout << recvRows[0] << " | " << recvCols[0] << " | " ;
-    // int j = 0;
-    // for(int i = 0; i < m1->cols * m1->rows; i++){
-    //     if(j < 3){
-    //         cout << m1->data[i] << " ";
-    //         j++;
-    //     }else{
-    //         cout << endl;
-    //         j = 0;
-    //     }
-    // }
-    // cout << endl;
-
     //recibimos M2
-    recvMSG(clientId, (void **)&recvRows, &recvBuffSize);
-    recvMSG(clientId, (void **)&recvCols, &recvBuffSize);
-    recvMSG(clientId, (void **)&recvData, &recvBuffSize);
+    recvMSG(clientId, (void **)&recvRows2, &recvBuffSize);
+    recvMSG(clientId, (void **)&recvCols2, &recvBuffSize);
+    recvMSG(clientId, (void **)&recvData2, &recvBuffSize);
 
     matrix_t * m2 = new matrix_t();
-    m2->rows = recvRows[0];
-    m2->cols = recvCols[0];
-    m2->data = recvData;
+    m2->rows = recvRows2[0];
+    m2->cols = recvCols2[0];
+    m2->data = recvData2;
 
     matrix_t * m3 = mmi->multMatrices(m1,m2);
 
@@ -92,6 +81,9 @@ void MultMatrix_imp :: multiMatrix(){
     delete [] recvData;
     delete [] recvRows;
     delete [] recvCols;
+    delete [] recvData2;
+    delete [] recvRows2;
+    delete [] recvCols2;
 
 }
 void MultMatrix_imp :: schreibeMatrix(){
