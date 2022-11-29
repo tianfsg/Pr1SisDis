@@ -4,7 +4,7 @@
 using namespace std;
 
 MultMatrix_imp :: MultMatrix_imp(int clientId){
-    cout << "Solicitando conexion..." << endl;
+    cout << "Solicitud para conexion..." << endl;
     this->clientId = clientId;
     if(clientId < 0){
         cout << "ERROR " << __FILE__ << ":" << __LINE__ << "\n";
@@ -18,31 +18,35 @@ MultMatrix_imp :: ~MultMatrix_imp(){
 
 void MultMatrix_imp :: leerMatrix(){
 
-    cout << "OPERACION READ | (SERVER)" << endl;
+    cout << "OPERACION *READ* | (SERVER)" << endl;
 
     const char *fileName = nullptr;
     int recvBuffSize = 0;
 
     recvMSG(clientId, (void **)&fileName, &recvBuffSize);
 
-    matrix_t * result = mmi->readMatrix(fileName);
+    matrix_t * m = mmi->readMatrix(fileName);
+
+    // for(int i = 0; i < m->cols * m->rows; i++){
+    //     cout << m->data[i] << endl;
+    // }
 
     //Enviamos la matrix
-    sendMSG(clientId, (const void *)&result->rows, sizeof(int));
-    sendMSG(clientId, (const void *)&result->cols, sizeof(int));
-    sendMSG(clientId, (const void *)&result->data, sizeof(int*));
-    cout << "ENVIANDO INFORMACION LEIDA| (SERVER)" << endl;
+    sendMSG(clientId, (const void *)&m->rows, sizeof(int));
+    sendMSG(clientId, (const void *)&m->cols, sizeof(int));
+    sendMSG(clientId, (const void *)m->data, sizeof(int*) * (m->cols * m->rows));
+    cout << "INFORMACION LEIDA ENVIADA | (SERVER)" << endl;
 
     delete[] fileName;
 }
 
 void MultMatrix_imp :: multiMatrix(){
 
-    cout << "OPERACION MULT | (SERVER)" << endl;
+    cout << "OPERACION *MULT* | (SERVER)" << endl;
 
-    matrix_t * m1 = new matrix_t();
-    matrix_t * m2 = new matrix_t();
     int * recvRows = nullptr, * recvCols = nullptr, * recvData = nullptr;
+    int * recvRows2 = nullptr, * recvCols2 = nullptr, * recvData2 = nullptr;
+
     int recvBuffSize = 0;
 
     //recibimos M1
@@ -50,48 +54,43 @@ void MultMatrix_imp :: multiMatrix(){
     recvMSG(clientId, (void **)&recvCols, &recvBuffSize);
     recvMSG(clientId, (void **)&recvData, &recvBuffSize);
     
+    matrix_t * m1 = new matrix_t();
     m1->rows = recvRows[0];
     m1->cols = recvCols[0];
     m1->data = recvData;
 
     //recibimos M2
-    recvMSG(clientId, (void **)&recvRows, &recvBuffSize);
-    recvMSG(clientId, (void **)&recvCols, &recvBuffSize);
-    recvMSG(clientId, (void **)&recvData, &recvBuffSize);
+    recvMSG(clientId, (void **)&recvRows2, &recvBuffSize);
+    recvMSG(clientId, (void **)&recvCols2, &recvBuffSize);
+    recvMSG(clientId, (void **)&recvData2, &recvBuffSize);
 
-    m2->rows = recvRows[0];
-    m2->cols = recvCols[0];
-    m2->data = recvData;
-
-    delete [] recvData;
-    delete [] recvRows;
-    delete [] recvCols;
-
-    cout << "MATRIX 1" << endl << endl;
-    cout << m1->rows << " : ROWS " << endl; 
-    cout << m1->cols << " : COLS " << endl;
-
-    cout << "MATRIX 2" << endl << endl;
-    cout << m2->rows << " : ROWS " << endl; 
-    cout << m2->cols << " : COLS " << endl;
+    matrix_t * m2 = new matrix_t();
+    m2->rows = recvRows2[0];
+    m2->cols = recvCols2[0];
+    m2->data = recvData2;
 
     matrix_t * m3 = mmi->multMatrices(m1,m2);
 
     delete m1;
     delete m2;
     
-    cout << "ENVIANDO INFORMACION | (SERVER)" << endl;
-    sendMSG(clientId, (const void *)&m3->data, sizeof(int*));
+    sendMSG(clientId, (const void *)m3->data, sizeof(int*) * (m3->cols * m3->rows));
+    cout << "INFORMACION ENVIADA | (SERVER)" << endl;
 
-    delete m3;
+    delete m3;    
+    delete [] recvData;
+    delete [] recvRows;
+    delete [] recvCols;
+    delete [] recvData2;
+    delete [] recvRows2;
+    delete [] recvCols2;
+
 }
 void MultMatrix_imp :: schreibeMatrix(){
 
     cout << "OPERACION SCHREIBE | (SERVER)" << endl;
 
-    //Creamos la matrix y nombre del fichero
-    matrix_t * m = new matrix_t();
-
+    //Variables para recibir la informacion
     const char *fileName = nullptr;
 
     int * recvRows = nullptr, * recvCols = nullptr, * recvData = nullptr;
@@ -102,29 +101,31 @@ void MultMatrix_imp :: schreibeMatrix(){
     recvMSG(clientId, (void **)&recvCols, &recvBuffSize);
     recvMSG(clientId, (void **)&recvData, &recvBuffSize);
     recvMSG(clientId, (void **)&fileName, &recvBuffSize);
-
-
-
+    
+    //Creamos la matrix
+    matrix_t * m = new matrix_t();
     m->rows = recvRows[0];
     m->cols = recvCols[0];
     m->data = recvData;
 
-    delete [] recvData;
-    delete [] recvRows;
-    delete [] recvCols;
+    // for(int i = 0; i < m->cols * m->rows; i++){
+    //     cout << m->data[i] << endl;
+    // }
 
     mmi->writeMatrix(m, fileName);
 
-    cout << "MATRIX GUARDADA EN ALMACENAMIENTO." << endl;
-    
+    cout << "MATRIX ALMACENADA EN " << fileName << " | (SERVER)" << endl;
     delete m;
     delete [] fileName;
+    delete [] recvData;
+    delete [] recvRows;
+    delete [] recvCols;
 }
 
 void MultMatrix_imp :: identityMatrix(){
 
     cout << "OPERACION IDENTITY | (SERVER)" << endl;
-    matrix_t * m = nullptr;
+
     int * recvRows = nullptr, * recvCols = nullptr;
     int recvBuffSize = 0;
 
@@ -132,37 +133,45 @@ void MultMatrix_imp :: identityMatrix(){
     recvMSG(clientId, (void **)&recvRows, &recvBuffSize);
     recvMSG(clientId, (void **)&recvCols, &recvBuffSize);
 
+    matrix_t * m = nullptr;
     m = mmi->createIdentity(recvRows[0],recvCols[0]);
     
-    delete [] recvRows;
-    delete [] recvCols;
+    // for(int i = 0; i < m->cols * m->rows; i++){
+    //     cout << m->data[i] << endl;
+    // }
 
-    cout << "ENVIANDO INFORMACION | (SERVER)" << endl;
-    sendMSG(clientId, (const void *)&m->data, sizeof(int*));
+    sendMSG(clientId, (const void *)m->data, sizeof(int*) * (recvRows[0] * recvCols[0]));
+    cout << "INFORMACION ENVIADA | (SERVER)" << endl;
 
     delete [] m;
+    delete [] recvRows;
+    delete [] recvCols;
 }
 
 void MultMatrix_imp :: randomMatrix(){
 
     cout << "OPERACION RAND | (SERVER)" << endl;
-    matrix_t * m = nullptr;
+    
     int * recvRows = nullptr, * recvCols = nullptr;
     int recvBuffSize = 0;
 
     //Recibimos las dimensiones
     recvMSG(clientId, (void **)&recvRows, &recvBuffSize);
     recvMSG(clientId, (void **)&recvCols, &recvBuffSize);
-
+   
+    matrix_t * m = nullptr;
     m = mmi->createRandMatrix(recvRows[0],recvCols[0]);
     
-    delete [] recvRows;
-    delete [] recvCols;
-
-    cout << "ENVIANDO INFORMACION | (SERVER)" << endl;
-    sendMSG(clientId, (const void *)&m->data, sizeof(int*));
+    // for(int i = 0; i < m->cols * m->rows; i++){
+    //     cout << m->data[i] << endl;
+    // }
+    
+    sendMSG(clientId, (const void *)m->data, sizeof(int*) * (recvRows[0] * recvCols[0]));
+    cout << "INFORMACION ENVIADA | (SERVER)" << endl;
     
     delete [] m;
+    delete [] recvRows;
+    delete [] recvCols;
 }
 
 
@@ -178,6 +187,7 @@ void MultMatrix_imp :: recvOp(){
         switch (typeOP[0]){
             case OP_END:
                 cout << "Cliente desconecta" << endl;
+                mmi->~multMatrix();
                 break;
             case OP_READ:
                 leerMatrix();
