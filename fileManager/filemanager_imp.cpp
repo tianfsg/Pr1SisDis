@@ -47,12 +47,16 @@ void FileManager_imp::recieveReadFile(){
 	
 	//Recibe una dirección de memoria dónde guardar la información que se lea del fichero
 	recvMSG(clientId, (void**)&recvBuffFile, &recvBuffFileSize);
+	cout<<recvBuffFile<<endl;
 	recvMSG(clientId, (void**)&recvBuffData, (int*)&recvBuffDataSize);
 	
 	fm->readFile(recvBuffFile, recvBuffData, recvBuffDataSize);
 	
 	//Devuelve la dirección de memoria ya con la información leída
 	sendMSG(clientId, (const void*)recvBuffData, recvBuffDataSize);
+	
+	delete[] recvBuffFile;
+	delete[] recvBuffData;
 }
 
 //Función que recibe la operación para ejecutar la función freeListedFiles
@@ -75,6 +79,9 @@ void FileManager_imp::recieveWriteFile(){
 	recvMSG(clientId, (void**)&recvBuffData, (int*)&recvBuffDataSize);
 	
 	fm->writeFile(recvBuffFile, recvBuffData, recvBuffDataSize);
+	
+	delete[] recvBuffFile;
+	delete[] recvBuffData;
 }
 
 //Función que recibe el tipo de operación para saber cual tiene que ejecutar en el server

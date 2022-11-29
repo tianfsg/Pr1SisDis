@@ -20,10 +20,11 @@ int main(int argc,char** argv)
 	//Iniciamos un nuevo stub que se comunicará con el server
 	//El fichero que hay dentro del constructor hay que cambiarlo, yo use ese ya
 	//que el server era el que se tenía que conectar a la carpeta compartida y no podía acceder a dirprueba/
-	FileManager *fm=new FileManager("dirprueba/");
+	FileManager *fm=new FileManager("../../../../dirprueba_servidor");
 	vector<string*>* vfiles=fm->listFiles();
 	bool salida = false;
 	string comando;
+	char* data=nullptr;
 	
 	//While que inicia la interfaz tipo terminal linux
 	while(salida == false){
@@ -46,40 +47,54 @@ int main(int argc,char** argv)
 		//Opción para enviar información que se quiere que se implemente en el directorio del server
 		else if(comando == "Upload"){
 			
-			FILE* testFile = fopen("data.txt","r");
+			string readFile;
+			
+			std::cout<<"Introduzca el fichero del que quiere leer: ";
+			std::cin>>readFile;
+			
+			readFile = "dirprueba_cliente/" + readFile;
+			
+			FILE* testFile = fopen(readFile.c_str(),"r");
 			
 			fseek(testFile, 0L, SEEK_END);
 			fileLen = ftell(testFile);
 			fseek(testFile, 0L, SEEK_SET);
 			data = new char[fileLen];
 			fread(data,fileLen,1,testFile);
+			fclose(testFile);
 			
 			string fichero;
 			
 			cout<<"Introduzca el fichero donde se va a escribir: ";
 			cin>>fichero;
 			
-			for(int i = 0; i < vfiles->size(); i++){
-				if(fichero == *(vfiles->at(i))){
-					cout<<"Escribiendo en "<<fichero<<" del directorio de prueba:\n";
-					fm->writeFile(&(*(vfiles->at(i)))[0],data,fileLen);
-					break;
-				}
-			}
+			cout<<"Escribiendo en "<<fichero<<" del directorio de prueba:\n";
+			fm->writeFile((char*)fichero.c_str(),data,fileLen);
+		
 		}
 		//Opción para obterner información del directorio del server
 		else if(comando == "Download"){
 			
 			string fichero;
+			string writeFile;
 			
 			cout<<"Introduzca el fichero que quiere leer: ";
 			cin>>fichero;
 			
+			std::cout<<"Introduzca el fichero donde lo quiere escribir: ";
+			std::cin>>writeFile;
+			
+			writeFile = "dirprueba_cliente/" + writeFile;
+			
 			for(int i = 0; i < vfiles->size(); i++){
 				if(fichero == *(vfiles->at(i))){
-					cout<<"Leyendo "<<fichero<<" del directorio de prueba:\n";
+					cout<<"Leyendo "<<*(vfiles->at(i))<<" del directorio de prueba:\n";
 					fm->readFile(&(*(vfiles->at(i)))[0],data,fileLen);
-					cout<<data<<"\n";
+					
+					FILE* testFile = fopen(writeFile.c_str(), "w");
+					fwrite(data,fileLen,1,testFile);
+					fclose(testFile);
+					
 					break;
 				}
 			}

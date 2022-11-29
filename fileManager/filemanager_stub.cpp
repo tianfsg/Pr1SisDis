@@ -53,7 +53,7 @@ vector<string*>* FileManager::listFiles(){
 //Función que envía una dirección de memoria al server para que éste la rellene con información
 //de un fichero y recibe la dirección ya con la información
 void FileManager::readFile(char* fileName, char* &data, unsigned long int & dataLength){
-	
+
 	int typeOp = OP_READFILE;
 	sendMSG(serverId, (const void*)&typeOp, sizeof(int));
 	
