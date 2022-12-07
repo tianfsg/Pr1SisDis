@@ -1,8 +1,9 @@
 #include "filemanager_stub.h"
 #include "utils.h"
 
-#define PORT 40000
+#define PORT 31002
 #define IP_SERVER "172.31.70.156"
+//#define IP_SERVER "10.111.137.113"
 
 //Constructor por parámetro en el que se inicia la conexión con el server
 FileManager::FileManager(string path){

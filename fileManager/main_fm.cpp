@@ -20,8 +20,8 @@ int main(int argc,char** argv)
 	//Iniciamos un nuevo stub que se comunicará con el server
 	//El fichero que hay dentro del constructor hay que cambiarlo, yo use ese ya
 	//que el server era el que se tenía que conectar a la carpeta compartida y no podía acceder a dirprueba/
-	FileManager *fm=new FileManager("../../../../dirprueba_servidor");
-	vector<string*>* vfiles=fm->listFiles();
+	FileManager *fm=new FileManager("/prueba");
+	vector<string*>* vfiles;
 	bool salida = false;
 	string comando;
 	char* data=nullptr;
@@ -31,6 +31,7 @@ int main(int argc,char** argv)
 		
 		char* data=nullptr;
 		unsigned long int fileLen=0;
+		vfiles=fm->listFiles();
 		
 		std::cout<<"usuario@usuario-fileManager:~$ ";
 		std::cin>>comando;

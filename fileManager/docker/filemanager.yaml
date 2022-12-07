@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kub-fm
+  namespace: default
+spec: 
+  replicas: 3
+  selector:
+    matchLabels:
+      app: filemanager
+  template:
+    metadata:
+      labels:
+        app: filemanager
+    spec:
+     containers:
+     - name: kub-fm
+       image: docker.io/mcabreralinan/filemanager:1.8
+       volumeMounts:
+       - mountPath: /prueba
+         name: directorio-prueba
+     volumes:
+     - name: directorio-prueba
+       hostPath:
+        path: /home/ubuntu/compartido
+        type: Directory
